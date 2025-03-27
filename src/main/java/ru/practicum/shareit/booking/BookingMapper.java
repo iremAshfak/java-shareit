@@ -22,11 +22,11 @@ public class BookingMapper {
 
         return BookingDto.builder()
                 .id(booking.getId())
-                .startTime(booking.getStartTime())
-                .endTime(booking.getEndTime())
+                .start(booking.getStart())
+                .end(booking.getEnd())
                 .item(booking.getItem())
                 .booker(booking.getBooker())
-                .bookingStatus(booking.getBookingStatus())
+                .status(booking.getStatus())
                 .build();
     }
 
@@ -37,11 +37,11 @@ public class BookingMapper {
 
         return Booking.builder()
                 .id(bookingDto.getId())
-                .startTime(bookingDto.getStartTime())
-                .endTime(bookingDto.getEndTime())
+                .start(bookingDto.getStart())
+                .end(bookingDto.getEnd())
                 .item(bookingDto.getItem())
                 .booker(bookingDto.getBooker())
-                .bookingStatus(bookingDto.getBookingStatus())
+                .status(bookingDto.getStatus())
                 .build();
     }
 
@@ -51,19 +51,19 @@ public class BookingMapper {
 
     public static Booking requestToBooking(BookingRequestDto bookingRequestDto) {
         return Booking.builder()
-                .startTime(bookingRequestDto.getStartTime())
-                .endTime(bookingRequestDto.getEndTime())
+                .start(bookingRequestDto.getStart())
+                .end(bookingRequestDto.getEnd())
                 .build();
     }
 
     public static BookingResponseDto bookingToResponse(Booking booking) {
         return booking == null ? null : BookingResponseDto.builder()
                 .id(booking.getId())
-                .startTime(booking.getStartTime())
-                .endTime(booking.getEndTime())
+                .start(booking.getStart())
+                .end(booking.getEnd())
                 .item(ItemMapper.itemToItemDto(booking.getItem()))
                 .booker(UserMapper.userToUserDto(booking.getBooker()))
-                .bookingStatus(booking.getBookingStatus())
+                .status(booking.getStatus())
                 .build();
     }
 

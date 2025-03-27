@@ -23,9 +23,9 @@ public class Booking {
     @Column(name = "id")
     private Long id;
     @Column(name = "start_date")
-    private LocalDateTime startTime;
+    private LocalDateTime start;
     @Column(name = "end_date")
-    private LocalDateTime endTime;
+    private LocalDateTime end;
     @ManyToOne
     @JoinColumn(name = "item_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -36,5 +36,5 @@ public class Booking {
     private User booker;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private StatusType bookingStatus;
+    private StatusType status;
 }
