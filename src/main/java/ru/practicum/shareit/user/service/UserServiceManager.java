@@ -1,62 +1,100 @@
 package ru.practicum.shareit.user.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.exceptions.ConditionsNotMetException;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class UserServiceManager implements UserService {
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceManager(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserServiceManager(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return UserMapper.usersToDto(userStorage.findAllUsers());
+        List<User> users = userRepository.findAll();
+        log.info("Все User получены.");
+
+        return UserMapper.usersToDto(users);
     }
 
     @Override
     public UserDto getUserById(Long id) {
-        return UserMapper.userToUserDto(userStorage.findUser(id));
+        log.info("Пользователь по id {} получен.", id);
+        return userRepository.findById(id)
+                .map(UserMapper::userToUserDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден."));
     }
 
+    @Transactional
     @Override
     public UserDto createNewUser(UserDto userDto) {
         validateUser(userDto);
         userDto.setId(getNextId());
-        return UserMapper.userToUserDto(userStorage.saveUser(UserMapper.userDtoToUser(userDto)));
+        log.info("до попытки Создание пользователя с id {}.", userDto);
+
+        try {
+            log.info("Создание пользователя с id {}.", userDto);
+            return UserMapper.userToUserDto(userRepository.save(UserMapper.userDtoToUser(userDto)));
+        } catch (DataIntegrityViolationException e) {
+            throw new ConditionsNotMetException("Такой email уже есть.");
+        }
     }
 
+    @Transactional
     @Override
     public UserDto updateUserById(Long id, UserDto newUser) {
         if (id == null) {
             log.error("Невозможно обновить. Не указан id.");
             throw new ConditionsNotMetException("Невозможно обновить. Не указан id");
         }
-        User oldUser = userStorage.updateUser(id, UserMapper.userDtoToUser(newUser));
-        log.info("Пользователь с id: {} обновлен ", newUser.getId());
 
-        return UserMapper.userToUserDto(oldUser);
+        try {
+            User user = UserMapper.userDtoToUser(getUserById(id));
+            if (newUser.getName() != null && !newUser.getName().isBlank()) {
+                user.setName(newUser.getName());
+            }
+            if (newUser.getEmail() != null && !newUser.getEmail().isBlank()) {
+                user.setEmail(newUser.getEmail());
+            }
+            log.info("Пользователь с id: {} обновлен ", user.getId());
+            return UserMapper.userToUserDto(userRepository.saveAndFlush(user));
+        } catch (DataIntegrityViolationException e) {
+            throw new ConditionsNotMetException("Такой email уже есть.");
+        }
     }
 
+    @Transactional
     @Override
     public void deleteUserById(Long id) {
-        userStorage.deleteUser(id);
+        if (!userRepository.existsById(id)) {
+            log.info("Пользователь с  id {} не найден.", id);
+            throw new NotFoundException("Пользователь не найден");
+        }
+        userRepository.deleteById(id);
+        log.info("Удаление пользователя с id {}.", id);
     }
 
+
     private Long getNextId() {
-        Long currentMaxId = (long) Math.toIntExact(userStorage.findAllUsers().stream()
+        Long currentMaxId = (long) Math.toIntExact(userRepository.findAll().stream()
                 .mapToLong(User::getId)
                 .max()
                 .orElse(0));

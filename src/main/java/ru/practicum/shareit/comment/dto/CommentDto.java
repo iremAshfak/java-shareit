@@ -2,10 +2,10 @@ package ru.practicum.shareit.comment.dto;
 
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import ru.practicum.shareit.user.User;
 
-@Data
+@Getter
 @Builder
 public class CommentDto {
     private Long id;

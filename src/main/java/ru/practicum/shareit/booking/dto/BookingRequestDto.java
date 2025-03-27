@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Builder
-@Data
+@Getter
 public class BookingRequestDto {
     private Long itemId;
     @FutureOrPresent

@@ -6,8 +6,10 @@ import ru.practicum.shareit.user.User;
 
 @Entity
 @Table(name = "items")
-@Builder
 @Data
+@Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
