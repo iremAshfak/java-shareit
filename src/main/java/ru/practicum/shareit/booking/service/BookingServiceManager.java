@@ -48,11 +48,11 @@ public class BookingServiceManager implements BookingService {
         if (!item.getAvailable()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Вещь не доступена для бронирования.");
         }
-        if (bookingRequestDto.getStartTime().isAfter(bookingRequestDto.getEndTime()) || bookingRequestDto.getStartTime()
-                .equals(bookingRequestDto.getEndTime())) {
+        if (bookingRequestDto.getStart().isAfter(bookingRequestDto.getEnd()) || bookingRequestDto.getStart()
+                .equals(bookingRequestDto.getEnd())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Время начала позже окончания бронирования");
         }
-        if (bookingRequestDto.getStartTime().isBefore(LocalDateTime.now())) {
+        if (bookingRequestDto.getStart().isBefore(LocalDateTime.now())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Дата начала не может быть в прошлом");
         }
         if (userId.equals(item.getOwner().getId())) {
@@ -61,7 +61,7 @@ public class BookingServiceManager implements BookingService {
         }
         Booking booking = BookingMapper.requestToBooking(bookingRequestDto);
 
-        booking.setBookingStatus(StatusType.WAITING);
+        booking.setStatus(StatusType.WAITING);
         booking.setBooker(user);
         booking.setItem(item);
         bookingRepository.save(booking);
@@ -78,12 +78,12 @@ public class BookingServiceManager implements BookingService {
         if (!userRepository.existsById(userOwnerId)) {
             throw new NotFoundException("Пользователь не найден");
         }
-        if (booking.getBookingStatus().equals(StatusType.APPROVED) ||
-                booking.getBookingStatus().equals(StatusType.REJECTED)) {
+        if (booking.getStatus().equals(StatusType.APPROVED) ||
+                booking.getStatus().equals(StatusType.REJECTED)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "StateType для данного бронирования уже изменен на APPROVED");
         }
-        if (!booking.getBookingStatus().equals(StatusType.WAITING)) {
+        if (!booking.getStatus().equals(StatusType.WAITING)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "StateType можно поменять только для бронирования со  статусом WAITING");
         }
@@ -94,10 +94,10 @@ public class BookingServiceManager implements BookingService {
         }
 
         if (approved) {
-            booking.setBookingStatus(StatusType.APPROVED);
+            booking.setStatus(StatusType.APPROVED);
             log.info("Владелец вещи  c id {} подтвердил запрос на бронирование с id {} ", userOwnerId, booking.getId());
         } else {
-            booking.setBookingStatus(StatusType.REJECTED);
+            booking.setStatus(StatusType.REJECTED);
             log.info("Владелец c id {} отклонил запрос на бронирование с id {} ", userOwnerId, booking.getId());
         }
 
