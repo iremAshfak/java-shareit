@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.request.ItemRequest;
+import org.apache.coyote.Request;
 import ru.practicum.shareit.user.User;
 
 @Data
@@ -13,5 +13,5 @@ public class ItemDto {
     private String description;
     private Boolean available;
     private User owner;
-    private ItemRequest request;
+    private Request request;
 }
