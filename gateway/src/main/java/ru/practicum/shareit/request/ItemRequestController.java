@@ -23,14 +23,11 @@ public class ItemRequestController {
     @PostMapping
     public ResponseEntity<Object> createRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
                                                 @RequestHeader(value = USER_ID_HEADER) @Positive Long userId) {
-
         return itemRequestClient.createRequest(itemRequestDto, userId);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllForRequestor(
-            @RequestHeader(value = USER_ID_HEADER) @Positive Long userId) {
-
+    public ResponseEntity<Object> getAllForRequestor(@RequestHeader(value = USER_ID_HEADER) @Positive Long userId) {
         return itemRequestClient.getAllForRequestor(userId);
     }
 
@@ -39,14 +36,12 @@ public class ItemRequestController {
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero int from,
             @RequestParam(defaultValue = "20", required = false) @Positive int size,
             @RequestHeader(value = USER_ID_HEADER) @Positive Long userId) {
-
         return itemRequestClient.getAll(from, size, userId);
     }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getById(@PathVariable @Positive long requestId,
                                           @RequestHeader(value = USER_ID_HEADER) @Positive Long userId) {
-
         return itemRequestClient.getById(requestId, userId);
     }
 }

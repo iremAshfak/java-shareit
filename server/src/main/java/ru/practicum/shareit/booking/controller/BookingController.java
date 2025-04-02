@@ -36,7 +36,6 @@ public class BookingController {
     public ResponseEntity<BookingResponseDto> confirm(@PathVariable("bookingId") long bookingId,
                                                       @RequestParam(name = "approved") boolean approved,
                                                       @RequestHeader(USER_ID_HEADER) long userOwnerId) {
-
         return new ResponseEntity<>(bookingService.confirm(bookingId, userOwnerId, approved), HttpStatus.OK);
     }
 
@@ -45,7 +44,6 @@ public class BookingController {
                                                       long bookingId,
                                                       @RequestHeader(value = USER_ID_HEADER)
                                                       Long userId) {
-
         return new ResponseEntity<>(bookingService.getById(bookingId, userId), HttpStatus.OK);
     }
 
@@ -55,7 +53,6 @@ public class BookingController {
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size,
             @RequestHeader(USER_ID_HEADER) long bookerId) {
-
         return new ResponseEntity<>(bookingService.getAllByBooker(from, size, state, bookerId), HttpStatus.OK);
     }
 
@@ -65,7 +62,6 @@ public class BookingController {
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size,
             @RequestHeader(USER_ID_HEADER) long ownerId) {
-
         return new ResponseEntity<>(bookingService.getAllByOwner(from, size, state, ownerId), HttpStatus.OK);
     }
 }

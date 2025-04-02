@@ -29,7 +29,6 @@ public class ItemRequestController {
     @GetMapping
     public ResponseEntity<List<ItemRequestResponseDto>> getAllForRequestor(
             @RequestHeader(value = USER_ID_HEADER) Long userId) {
-
         return new ResponseEntity<>(itemRequestService.getAllForRequestor(userId), HttpStatus.OK);
     }
 
@@ -38,7 +37,6 @@ public class ItemRequestController {
             @RequestParam(defaultValue = "0", required = false) int from,
             @RequestParam(defaultValue = "20", required = false) int size,
             @RequestHeader(value = USER_ID_HEADER) Long userId) {
-
         return new ResponseEntity<>(itemRequestService.getAllRequests(from, size, userId),
                 HttpStatus.OK);
     }
@@ -46,7 +44,6 @@ public class ItemRequestController {
     @GetMapping("/{requestId}")
     public ResponseEntity<ItemRequestResponseDto> getById(@PathVariable long requestId,
                                                           @RequestHeader(value = USER_ID_HEADER) Long userId) {
-
         return new ResponseEntity<>(itemRequestService.getById(requestId, userId), HttpStatus.OK);
     }
 }

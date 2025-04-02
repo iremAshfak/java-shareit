@@ -25,14 +25,12 @@ public class ItemController {
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero int from,
             @RequestParam(defaultValue = "10", required = false) @Positive int size,
             @RequestHeader(value = USER_ID_HEADER) Long userId) {
-
         return itemClient.getItemsOfUserById(from, size, userId);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getItem(@PathVariable Long id,
-                                                   @RequestHeader(value = USER_ID_HEADER) Long userId) {
-
+                                          @RequestHeader(value = USER_ID_HEADER) Long userId) {
 
         return itemClient.getItemById(id, userId);
     }
@@ -41,24 +39,19 @@ public class ItemController {
     public ResponseEntity<Object> createItem(@Valid @RequestBody ItemDto itemDto,
                                               @RequestHeader(value = USER_ID_HEADER) Long userId) {
 
-
         return itemClient.createNewItem(itemDto, userId);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateItem(@PathVariable Long id, @RequestBody ItemDto itemDto,
                                         @RequestHeader(value = USER_ID_HEADER) Long userId) {
-
-
         return itemClient.updateItemOfUserById(id, itemDto, userId);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteItem(@PathVariable Long id,
                                         @RequestHeader(value = USER_ID_HEADER) Long userId) {
-
         itemClient.deleteItemOfUserById(id, userId);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -68,7 +61,6 @@ public class ItemController {
         @RequestParam(defaultValue = "10", required = false) @Positive int size,
         @RequestParam(name = "text") String text,
         @RequestHeader(value = USER_ID_HEADER) Long userId) {
-
             return itemClient.findItemsOfUser(from, size, text, userId);
     }
 }
