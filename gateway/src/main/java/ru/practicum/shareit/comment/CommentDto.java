@@ -14,5 +14,6 @@ public class CommentDto {
     private Long id;
     private String text;
     private UserDto author;
+    @Builder.Default
     private LocalDateTime created = ZonedDateTime.now(ZoneId.of("Europe/Moscow")).toLocalDateTime();
 }
