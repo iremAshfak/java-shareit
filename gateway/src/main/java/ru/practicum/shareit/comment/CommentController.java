@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/items")
 public class CommentController {
     private final CommentClient commentClient;
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@PathVariable("itemId") @Positive long itemId,
-                                             @RequestHeader(value = USER_ID_HEADER) @Positive long userId,
+                                             @RequestHeader(value = "X-Sharer-User-Id") @Positive long userId,
                                              @Valid @RequestBody CommentDto commentDto) {
         return commentClient.addComment(itemId, userId, commentDto);
     }
